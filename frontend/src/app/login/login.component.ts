@@ -2,43 +2,73 @@ import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../auth.service';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
+import { MatCardModule } from '@angular/material/card';
+import { MatInputModule } from '@angular/material/input';
+import { MatButtonModule } from '@angular/material/button';
+import { MatFormFieldModule } from '@angular/material/form-field';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [
+    CommonModule, 
+    FormsModule, 
+    RouterModule,
+    MatCardModule,
+    MatInputModule,
+    MatButtonModule,
+    MatFormFieldModule
+  ],
   template: `
-    <h2>Login</h2>
-    <form (ngSubmit)="onSubmit()">
-      <div>
-        <label for="username">Nombre de usuario:</label>
-        <input type="text" id="username" [(ngModel)]="username" name="username" required>
-      </div>
-      <div>
-        <label for="password">Contraseña:</label>
-        <input type="password" id="password" [(ngModel)]="password" name="password" required>
-      </div>
-      <button type="submit">Ingresar</button>
-    </form>
-    <p *ngIf="error" class="error">{{ error }}</p>
-    <p>¿No tienes una cuenta? <a routerLink="/register">Registrarse</a></p>
+    <mat-card>
+      <mat-card-header>
+        <mat-card-title>Login</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <form (ngSubmit)="onSubmit()">
+          <mat-form-field appearance="fill">
+            <mat-label>Nombre de usuario</mat-label>
+            <input matInput type="text" [(ngModel)]="username" name="username" required>
+          </mat-form-field>
+          <mat-form-field appearance="fill">
+            <mat-label>Contraseña</mat-label>
+            <input matInput type="password" [(ngModel)]="password" name="password" required>
+          </mat-form-field>
+          <button mat-raised-button color="primary" type="submit">Ingresar</button>
+        </form>
+      </mat-card-content>
+      <mat-card-footer>
+        <p *ngIf="error" class="error">{{ error }}</p>
+        <p>¿No tienes una cuenta? <a mat-button color="accent" routerLink="/register">Registrarse</a></p>
+      </mat-card-footer>
+    </mat-card>
   `,
-  styles: [
-    `form { display: flex; flex-direction: column; max-width: 300px; margin: auto; }`,
-    `input { margin-bottom: 10px; }`,
-    `.error { color: red; }`
-  ]
+  styles: [`
+    :host {
+      display: flex;
+      justify-content: center;
+      margin: 100px 0px;
+    }
+    mat-card {
+      max-width: 400px;
+    }
+    mat-form-field {
+      width: 100%;
+      margin-bottom: 16px;
+    }
+    .error {
+      color: red;
+      margin-top: 16px;
+    }
+  `]
 })
 export class LoginComponent {
   username: string = '';
   password: string = '';
   error: string | null = null;
-
   private authService: AuthService = inject(AuthService);
-
   constructor(private router: Router) {}
-
   onSubmit() {
     this.authService.login(this.username, this.password).subscribe(
       () => {
