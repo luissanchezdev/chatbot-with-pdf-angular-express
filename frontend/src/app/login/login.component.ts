@@ -12,17 +12,17 @@ import { Router } from '@angular/router';
     <h2>Login</h2>
     <form (ngSubmit)="onSubmit()">
       <div>
-        <label for="username">Username:</label>
+        <label for="username">Nombre de usuario:</label>
         <input type="text" id="username" [(ngModel)]="username" name="username" required>
       </div>
       <div>
-        <label for="password">Password:</label>
+        <label for="password">Contraseña:</label>
         <input type="password" id="password" [(ngModel)]="password" name="password" required>
       </div>
-      <button type="submit">Login</button>
+      <button type="submit">Ingresar</button>
     </form>
     <p *ngIf="error" class="error">{{ error }}</p>
-    <p>Don't have an account? <a routerLink="/register">Register</a></p>
+    <p>¿No tienes una cuenta? <a routerLink="/register">Registrarse</a></p>
   `,
   styles: [
     `form { display: flex; flex-direction: column; max-width: 300px; margin: auto; }`,
@@ -45,7 +45,7 @@ export class LoginComponent {
         // Navigation is handled in the AuthService
       },
       (error : any) => {
-        this.error = error.error.error || 'An error occurred during login.';
+        this.error = error.error.error || 'Ha ocurrido un error durante el inicio de sesión.';
       }
     );
   }

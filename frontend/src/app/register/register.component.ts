@@ -9,27 +9,27 @@ import { Router } from '@angular/router';
   standalone: true,
   imports: [CommonModule, FormsModule],
   template: `
-    <h2>Register</h2>
+    <h2>Registro</h2>
     <form (ngSubmit)="onSubmit()">
       <div>
-        <label for="username">Username:</label>
+        <label for="username">Nombre de usuario:</label>
         <input type="text" id="username" [(ngModel)]="username" name="username" required>
       </div>
       <div>
-        <label for="password">Password:</label>
+        <label for="password">Contraseña:</label>
         <input type="password" id="password" [(ngModel)]="password" name="password" required>
       </div>
       <div>
-        <label for="userType">User Type:</label>
+        <label for="userType">Tipo de usuario:</label>
         <select id="userType" [(ngModel)]="userType" name="userType" required>
-          <option value="client">Client</option>
-          <option value="company">Company</option>
+          <option value="client">Cliente</option>
+          <option value="company">Empresa</option>
         </select>
       </div>
-      <button type="submit">Register</button>
+      <button type="submit">Registrarse</button>
     </form>
     <p *ngIf="error" class="error">{{ error }}</p>
-    <p>Already have an account? <a routerLink="/login">Login</a></p>
+    <p>¿Ya tienes una cuenta? <a routerLink="/login">Iniciar sesión</a></p>
   `,
   styles: [
     `form { display: flex; flex-direction: column; max-width: 300px; margin: auto; }`,
@@ -53,7 +53,7 @@ export class RegisterComponent {
         this.router.navigate(['/login']);
       },
       (error) => {
-        this.error = error.error.error || 'An error occurred during registration.';
+        this.error = error.error.error || 'Un error ha ocurrido durante el registro';
       }
     );
   }

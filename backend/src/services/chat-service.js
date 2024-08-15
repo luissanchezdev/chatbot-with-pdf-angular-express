@@ -99,9 +99,11 @@ class ChatService {
             file: fs.createReadStream(req.file.path),
             purpose: "assistants",
           })
-          .then((response) => {
+          .then(async (response) => {
             console.log({ response });
             this.fileId = response.id;
+            await user.updateOne({ _id: new ObjectId(companyId) }, { current_file_id: response.id });
+            await user.updateOne({ _id: new ObjectId(companyId) }, { current_file_name: response.filename });
             console.log("file created");
           })
 
@@ -257,10 +259,16 @@ class ChatService {
   }
 
   async hasFile(companyId) {
+    console.log({ companyId });
     try {
       companyId = new ObjectId(companyId);
-      const company = await user.findById(companyId);
-      return !!company.current_file_id;
+      console.log({ companyId });
+      await user.findById(companyId)
+       .then(company => {
+        console.log({ company });
+        return !!company.current_file_id;
+       })
+      
     } catch (error) {
       console.error("Error checking file:", error);
       throw new Error("Failed to check file status.");

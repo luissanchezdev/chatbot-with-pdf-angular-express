@@ -10,8 +10,8 @@ import { AuthService } from './auth.service';
   template: `
     <nav *ngIf="authService.isLoggedIn()">
       <a routerLink="/chat">Chat</a>
-      <a *ngIf="(authService.userType$ | async) === 'company'" routerLink="/upload">Upload Document</a>
-      <button (click)="logout()">Logout</button>
+      <a *ngIf="(authService.userType$ | async) === 'company'" routerLink="/upload">Subir archivo</a>
+      <button (click)="logout()">Cerrar sesión</button>
     </nav>
     <router-outlet></router-outlet>
   `,

@@ -41,6 +41,9 @@ const upload = multer({
 });
 
 router.post('/upload', auth, upload.single('file'), async (req, res) => {
+  console.log(req.headers)
+  const userId = req.headers['x-user-id'];
+  console.log(userId)
   try {
     if (!req.file) {
       return res.status(400).json({ error: 'No file uploaded' });
@@ -49,8 +52,8 @@ router.post('/upload', auth, upload.single('file'), async (req, res) => {
     console.log('Uploading file:', req.file.path);
 
     console.log('Aqui comienza el problema')
-    const fileId = await chatService.uploadFile(req, req.file.path, '66b99c8ac9eb4fe0b265f5d4');
-    res.json({ message: 'File uploaded successfully', fileId, fileName: await chatService.getFileName('66b99c8ac9eb4fe0b265f5d4') });
+    const fileId = await chatService.uploadFile(req, req.file.path, userId);
+    res.json({ message: 'File uploaded successfully', fileId, fileName: await chatService.getFileName(userId) });
   } catch (error) {
     console.error('Error:', error);
     res.status(500).json({ error: error.message || 'An error occurred while uploading the file.' });
@@ -58,15 +61,18 @@ router.post('/upload', auth, upload.single('file'), async (req, res) => {
 });
 
 router.post('/message', auth, async (req, res) => {
+  console.log(req.headers)
+  const userId = req.headers['x-user-id'];
+  console.log({ userId })
   try {
     const userMessage = req.body.message;
     if (!userMessage) {
       return res.status(400).json({ error: 'Message is required' });
     }
-    if (!await chatService.hasFile('66b99c8ac9eb4fe0b265f5d4')) {
+    if (!await chatService.hasFile('66b982bd27ce66e3a32640d6')) {
       return res.status(400).json({ error: 'Chat not available. Please upload a document first.' });
     }
-    const response = await chatService.sendMessage(userMessage, '66b99c8ac9eb4fe0b265f5d4');
+    const response = await chatService.sendMessage(userMessage, '66b982bd27ce66e3a32640d6');
     res.json({ response });
   } catch (error) {
     console.error('Error:', error);
@@ -75,9 +81,11 @@ router.post('/message', auth, async (req, res) => {
 });
 
 router.get('/chat-status', auth, async (req, res) => {
+  console.log(req.headers)
+  const userId = req.headers['x-user-id'];
   res.json({
-    chatAvailable: await chatService.hasFile('66b99c8ac9eb4fe0b265f5d4'),
-    currentFile: await chatService.getFileName('66b99c8ac9eb4fe0b265f5d4')
+    chatAvailable: await chatService.hasFile(userId),
+    currentFile: await chatService.getFileName(userId)
   });
 });
 

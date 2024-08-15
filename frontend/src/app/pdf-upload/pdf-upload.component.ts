@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { HttpClient, HttpClientModule, HttpErrorResponse } from '@angular/common/http';
+import { HttpClient, HttpClientModule, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { Router } from '@angular/router';
 
 @Component({
@@ -8,13 +8,13 @@ import { Router } from '@angular/router';
   standalone: true,
   imports: [CommonModule, HttpClientModule],
   template: `
-    <h2>Upload Document</h2>
-    <div *ngIf="currentFile">Current file: {{ currentFile }}</div>
+    <h2>Subir nuevo archivo para el chatbot</h2>
+    <div *ngIf="currentFile">Archivo actual: {{ currentFile }}</div>
     <input type="file" (change)="onFileSelected($event)" accept=".pdf,.doc,.docx,.xls,.xlsx">
-    <button (click)="onUpload()" [disabled]="!selectedFile">Upload</button>
+    <button (click)="onUpload()" [disabled]="!selectedFile">Subir</button>
     <div *ngIf="error" class="error">{{ error }}</div>
     <div *ngIf="success" class="success">{{ success }}</div>
-    <button (click)="goToChat()" [disabled]="!chatAvailable">Go to Chat</button>
+    <button (click)="goToChat()" [disabled]="!chatAvailable">Ir al chat</button>
   `,
   styles: [
     `.error { color: red; margin-top: 10px; }`,
@@ -35,15 +35,17 @@ export class PdfUploadComponent implements OnInit {
   }
 
   checkChatStatus() {
-    this.http.get<{chatAvailable: boolean, currentFile: string}>('http://localhost:3000/api/chat-status')
+    const userId = localStorage.getItem('userId') || '';
+    const headers = new HttpHeaders().set('X-User-ID', userId);
+    this.http.get<{chatAvailable: boolean, currentFile: string}>('http://localhost:3000/api/chat-status', { headers})
       .subscribe(
         (response) => {
           this.chatAvailable = response.chatAvailable;
           this.currentFile = response.currentFile;
         },
         (error) => {
-          console.error('Error checking chat status', error);
-          this.error = 'Error checking chat status. Please try again later.';
+          console.error('Error chequeando el estado del chat', error);
+          this.error = 'Error al chequear el estado del chat. Intentelo más tarde';
         }
       );
   }
@@ -58,26 +60,28 @@ export class PdfUploadComponent implements OnInit {
     if (this.selectedFile) {
       const formData = new FormData();
       formData.append('file', this.selectedFile, this.selectedFile.name);
+      const userId = localStorage.getItem('userId') || '';
+      const headers = new HttpHeaders().set('X-User-ID', userId);
       
-      this.http.post<{message: string, fileId: string, fileName: string}>('http://localhost:3000/api/upload', formData)
+      this.http.post<{message: string, fileId: string, fileName: string}>('http://localhost:3000/api/upload', formData, { headers })
         .subscribe(
           (response) => {
-            console.log('File uploaded successfully', response);
-            this.success = `File ${response.fileName} uploaded successfully.`;
+            console.log('Archivo subido exitosamente', response);
+            this.success = `Archivo ${response.fileName} subido exitosamente.`;
             this.currentFile = response.fileName;
             this.chatAvailable = true;
           },
           (error: HttpErrorResponse) => {
-            console.error('Error uploading file', error);
+            console.error('Error al subir un archivo', error);
             if (error.error instanceof ErrorEvent) {
-              this.error = `An error occurred: ${error.error.message}`;
+              this.error = `Un error ha ocurrido: ${error.error.message}`;
             } else {
-              this.error = `Server returned code ${error.status}, error message: ${error.error.error || 'Unknown error'}`;
+              this.error = `Servido retorno el siguiendo error ${error.status}, Mensaje de error: ${error.error.error || 'Error desconocido'}`;
             }
           }
         );
     } else {
-      this.error = 'Please select a file to upload.';
+      this.error = 'Por favor seleccione un archivo para subir.';
     }
   }
 

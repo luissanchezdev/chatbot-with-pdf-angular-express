@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { HttpClient, HttpClientModule, HttpHeaders } from '@angular/common/http';
 import { Router } from '@angular/router';
 
 @Component({
@@ -9,10 +9,10 @@ import { Router } from '@angular/router';
   standalone: true,
   imports: [CommonModule, FormsModule, HttpClientModule],
   template: `
-    <h2>Chat with Document Assistant</h2>
+    <h2>Blaper Chat</h2>
     <div *ngIf="!chatAvailable" class="error">
-      Chat not available. Please upload a document first.
-      <button (click)="goToUpload()">Go to Upload</button>
+      Chat no disponible. Por favor suba un documento primero.
+      <button (click)="goToUpload()">Subir un archivo</button>
     </div>
     <div *ngIf="chatAvailable">
       <p>Current document: {{ currentFile }}</p>
@@ -21,8 +21,8 @@ import { Router } from '@angular/router';
           {{ message.text }}
         </div>
       </div>
-      <input [(ngModel)]="userMessage" (keyup.enter)="sendMessage()" placeholder="Type your message...">
-      <button (click)="sendMessage()">Send</button>
+      <input [(ngModel)]="userMessage" (keyup.enter)="sendMessage()" placeholder="Escriba un mensaje...">
+      <button (click)="sendMessage()">Enviar</button>
     </div>
     <p *ngIf="error" class="error">{{ error }}</p>
   `,
@@ -56,12 +56,12 @@ export class ChatComponent implements OnInit {
           this.chatAvailable = response.chatAvailable;
           this.currentFile = response.currentFile;
           if (!this.chatAvailable) {
-            this.error = 'Chat not available. Please upload a document first.';
+            this.error = 'El chat no esta disponible. Por favor suba un documento primero.';
           }
         },
         (error) => {
-          console.error('Error checking chat status', error);
-          this.error = 'Error checking chat status. Please try again later.';
+          console.error('Error chequeando el estado del chat', error);
+          this.error = 'Error al chequear el estado del chat. Por favor intente de nuevo más tarde.';
         }
       );
   }
@@ -69,16 +69,18 @@ export class ChatComponent implements OnInit {
   sendMessage(): void {
     if (this.userMessage.trim() && this.chatAvailable) {
       this.messages.push({sender: 'user', text: this.userMessage});
+      const userId = localStorage.getItem('userId') || '';
+      const headers = new HttpHeaders().set('X-User-ID', userId);
       
-      this.http.post<{response: string}>('http://localhost:3000/api/message', { message: this.userMessage })
+      this.http.post<{response: string}>('http://localhost:3000/api/message', { message: this.userMessage }, { headers })
         .subscribe(
           (response) => {
             this.messages.push({sender: 'assistant', text: response.response});
             this.error = null;
           },
           (error) => {
-            console.error('Error sending message', error);
-            this.error = error.error.error || 'An error occurred while sending the message.';
+            console.error('Error al enviar el mensaje', error);
+            this.error = error.error.error || 'Error al enviar el mensaje.';
           }
         );
       

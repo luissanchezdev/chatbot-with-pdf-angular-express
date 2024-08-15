@@ -19,6 +19,7 @@ export class AuthService {
         tap(response => {
           localStorage.setItem('token', response.token);
           localStorage.setItem('userType', response.userType);
+          localStorage.setItem('userId', response.userId);
           this.userTypeSubject.next(response.userType);
           this.router.navigate([response.userType === 'company' ? '/upload' : '/chat']);
         })
@@ -32,6 +33,7 @@ export class AuthService {
   logout(): void {
     localStorage.removeItem('token');
     localStorage.removeItem('userType');
+    localStorage.removeItem('userId');
     this.userTypeSubject.next(null);
     this.router.navigate(['/login']);
   }
