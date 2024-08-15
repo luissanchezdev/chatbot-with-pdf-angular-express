@@ -64,8 +64,8 @@ class ChatService {
         this.thread = await this.openai.beta.threads.create();
       }
     } catch (error) {
-      console.error("Error initializing assistant:", error);
-      throw new Error("Failed to initialize assistant.");
+      console.error("Error iniciando el asistente:", error);
+      throw new Error("Fallo al iniciar el asistente");
     }
   }
 
@@ -215,7 +215,7 @@ class ChatService {
 
       if (!this.assistant || !this.thread) {
         throw new Error(
-          "Chat not available. Please initialize the assistant first."
+          "Chat no disponible. Por favor, sube un documento primero."
         );
       }
 
@@ -263,15 +263,14 @@ class ChatService {
     try {
       companyId = new ObjectId(companyId);
       console.log({ companyId });
-      await user.findById(companyId)
-       .then(company => {
-        console.log({ company });
+      const company = await user.findById(companyId)
+       
         return !!company.current_file_id;
-       })
+       
       
     } catch (error) {
-      console.error("Error checking file:", error);
-      throw new Error("Failed to check file status.");
+      console.error("Error comprobando el archivo:", error);
+      throw new Error("Falla al verificar el estado del archivo.");
     }
   }
 
@@ -279,10 +278,13 @@ class ChatService {
     try {
       companyId = new ObjectId(companyId);
       const company = await user.findById(companyId);
+      console.log({
+        companyFromGetFileName: company
+      })
       return company.current_file_name || "No file uploaded";
     } catch (error) {
-      console.error("Error getting file name:", error);
-      throw new Error("Failed to retrieve file name.");
+      console.error("Error encontrando el nombre del archivo", error);
+      throw new Error("Fallo al recuperar el nombre del archivo.");
     }
   }
 }

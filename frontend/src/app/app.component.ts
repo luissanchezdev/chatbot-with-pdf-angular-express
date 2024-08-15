@@ -1,27 +1,45 @@
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterOutlet } from '@angular/router';
+import { RouterOutlet, RouterLink } from '@angular/router';
 import { AuthService } from './auth.service';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, RouterOutlet],
+  imports: [CommonModule, RouterOutlet, RouterLink, MatToolbarModule, MatButtonModule, MatIconModule],
   template: `
-    <nav *ngIf="authService.isLoggedIn()">
-      <a routerLink="/chat">Chat</a>
-      <a *ngIf="(authService.userType$ | async) === 'company'" routerLink="/upload">Subir archivo</a>
-      <button (click)="logout()">Cerrar sesión</button>
-    </nav>
+    <mat-toolbar color="primary" *ngIf="authService.isLoggedIn()">
+      <span>Blaper Chat</span>
+      <span class="spacer"></span>
+      <a mat-button routerLink="/chat">
+        <mat-icon>chat</mat-icon>
+        Chat
+      </a>
+      <a mat-button *ngIf="(authService.userType$ | async) === 'company'" routerLink="/upload">
+        <mat-icon>cloud_upload</mat-icon>
+        Subir archivo
+      </a>
+      <button mat-icon-button (click)="logout()">
+        <mat-icon>exit_to_app</mat-icon>
+      </button>
+    </mat-toolbar>
     <router-outlet></router-outlet>
   `,
   styles: [`
-    nav { padding: 10px; background-color: #f0f0f0; }
-    nav a { margin-right: 10px; }
+    .spacer {
+      flex: 1 1 auto;
+    }
+    mat-toolbar {
+      margin-bottom: 20px;
+    }
   `]
 })
 export class AppComponent {
   authService: AuthService = inject(AuthService);
+  title : string = 'Blaper Chat';
 
   constructor() {}
 

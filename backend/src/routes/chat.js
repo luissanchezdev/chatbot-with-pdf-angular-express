@@ -56,36 +56,54 @@ router.post('/upload', auth, upload.single('file'), async (req, res) => {
     res.json({ message: 'File uploaded successfully', fileId, fileName: await chatService.getFileName(userId) });
   } catch (error) {
     console.error('Error:', error);
-    res.status(500).json({ error: error.message || 'An error occurred while uploading the file.' });
+    res.status(500).json({ error: error.message || 'Un error ha ocurrido al subir el archivo' });
   }
 });
 
 router.post('/message', auth, async (req, res) => {
-  console.log(req.headers)
+  //console.log(req.headers)
   const userId = req.headers['x-user-id'];
   console.log({ userId })
+  console.log('message')
   try {
     const userMessage = req.body.message;
     if (!userMessage) {
-      return res.status(400).json({ error: 'Message is required' });
+      return res.status(400).json({ error: 'Mensaje es requerido' });
     }
-    if (!await chatService.hasFile('66b982bd27ce66e3a32640d6')) {
-      return res.status(400).json({ error: 'Chat not available. Please upload a document first.' });
+    if (!await chatService.hasFile(userId)) {
+      return res.status(400).json({ error: 'Chat no disponible, por favor suba un documento primero' });
     }
-    const response = await chatService.sendMessage(userMessage, '66b982bd27ce66e3a32640d6');
+    const response = await chatService.sendMessage(userMessage, userId);
     res.json({ response });
   } catch (error) {
     console.error('Error:', error);
-    res.status(500).json({ error: error.message || 'An error occurred while processing your request.' });
+    res.status(500).json({ error: error.message || 'Un error ha ocurrido cuando se procesaba la petición' });
   }
 });
 
 router.get('/chat-status', auth, async (req, res) => {
   console.log(req.headers)
   const userId = req.headers['x-user-id'];
+  let chatAvailable
+  let currentFile
+  await chatService.hasFile(userId).then((response) => {
+    console.log({ responseHashFile: response })
+    chatAvailable = response
+  })
+  await chatService.getFileName(userId).then((response) => {
+    console.log(response)
+    currentFile = response
+  })
+
+  console.log({
+    chatAvailable,
+    currentFile
+  })
+
+  
   res.json({
-    chatAvailable: await chatService.hasFile(userId),
-    currentFile: await chatService.getFileName(userId)
+    chatAvailable,
+    currentFile
   });
 });
 
