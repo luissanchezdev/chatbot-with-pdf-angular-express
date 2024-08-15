@@ -1,0 +1,6 @@
+## Variables de entorno
+```bash
+OPENAI_API_KEY=TU-API-KEY
+MONGODB_URI=TU-MONGO-URI
+JWT_SECRET=TU-FRASE-SECRETA
+```
