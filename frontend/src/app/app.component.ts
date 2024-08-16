@@ -1,10 +1,11 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterOutlet, RouterLink } from '@angular/router';
 import { AuthService } from './auth.service';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import { Title } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-root',
@@ -12,7 +13,7 @@ import { MatIconModule } from '@angular/material/icon';
   imports: [CommonModule, RouterOutlet, RouterLink, MatToolbarModule, MatButtonModule, MatIconModule],
   template: `
     <mat-toolbar color="primary" *ngIf="authService.isLoggedIn()">
-      <span>Blaper Chat</span>
+      <span>{{ titleWeb }}</span>
       <span class="spacer"></span>
       <a mat-button routerLink="/chat">
         <mat-icon>chat</mat-icon>
@@ -37,11 +38,18 @@ import { MatIconModule } from '@angular/material/icon';
     }
   `]
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
   authService: AuthService = inject(AuthService);
-  title : string = 'Blaper Chat';
+  titleWeb : string = 'Blaper Chat';
 
-  constructor() {}
+  constructor(private title : Title) {
+
+  }
+
+  ngOnInit() {
+    this.title.setTitle(this.titleWeb);
+  }
+
 
   logout() {
     this.authService.logout();

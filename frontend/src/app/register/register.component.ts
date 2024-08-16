@@ -24,7 +24,7 @@ import { MatSelectModule } from '@angular/material/select';
   ],
   template: `
     <mat-card>
-      <mat-card-header>
+      <mat-card-header class="center">
         <mat-card-title>Registro</mat-card-title>
       </mat-card-header>
       <mat-card-content>
@@ -44,10 +44,12 @@ import { MatSelectModule } from '@angular/material/select';
               <mat-option value="company">Empresa</mat-option>
             </mat-select>
           </mat-form-field>
-          <button mat-raised-button color="primary" type="submit">Registrarse</button>
+          <div class="center">
+           <button mat-raised-button color="primary" type="submit">Registrarse</button>
+          </div>
         </form>
       </mat-card-content>
-      <mat-card-footer>
+      <mat-card-footer class="center">
         <p *ngIf="error" class="error">{{ error }}</p>
         <p>¿Ya tienes una cuenta? <a mat-button color="accent" routerLink="/login">Iniciar sesión</a></p>
       </mat-card-footer>

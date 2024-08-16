@@ -23,3 +23,9 @@ body {
   background: #FFC107;
   color: black;
 }
+
+.center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

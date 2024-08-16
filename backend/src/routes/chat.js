@@ -5,6 +5,7 @@ const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
 const auth = require('../routes/auth');
+const user = require('../models/user');
 const ObjectId = require('mongodb').ObjectId;
 
 // Asegurarse de que el directorio 'uploads' exista
@@ -60,9 +61,34 @@ router.post('/upload', auth, upload.single('file'), async (req, res) => {
   }
 });
 
+
+router.get('/chat-list', auth, async (req, res) => {
+  const userId = req.headers['x-user-id'];
+  console.log({ userId })
+  try {
+    const chatList = await chatService.getChatList(userId);
+    res.json( chatList );
+  } catch (error) {
+    console.error('Error:', error);
+    res.status(500).json({ error: error.message || 'Un error ha ocurrido al obtener la lista de chat' });
+  }
+})
+
+
+
 router.post('/message', auth, async (req, res) => {
   //console.log(req.headers)
-  const userId = req.headers['x-user-id'];
+  let userId = req.headers['x-user-id'];
+  if(req.headers['x-company-name']){
+    await user.findOne({ username : (req.headers['x-company-name']).toLowerCase() }).then((response) => {
+      userId = response._id
+      console.log({ userId })
+    })
+    .catch((error) => {
+      return res.status(400).json({ error: error.message || 'Un error ha ocurrido al obtener la información del usuario' });
+    })
+    //userId = req.headers['x-company-name'];
+  }
   console.log({ userId })
   console.log('message')
   try {
@@ -83,7 +109,21 @@ router.post('/message', auth, async (req, res) => {
 
 router.get('/chat-status', auth, async (req, res) => {
   console.log(req.headers)
-  const userId = req.headers['x-user-id'];
+  let userId = req.headers['x-user-id'];
+  console.log(req.headers['x-company-name'])
+  console.log({ userId })
+  if(req.headers['x-company-name']){
+    console.log(`x-company-name: ${req.headers['x-company-name']}`)
+    await user.findOne({ username : (req.headers['x-company-name']).toLowerCase() }).then((response) => {
+      userId = response._id
+      console.log({ userId })
+    })
+    .catch((error) => {
+      return res.status(400).json({ error: error.message || 'Un error ha ocurrido al obtener la información del usuario' });
+    })
+    //userId = req.headers['x-company-name'];
+  }
+  console.log({ userIdChanged: userId })
   let chatAvailable
   let currentFile
   await chatService.hasFile(userId).then((response) => {

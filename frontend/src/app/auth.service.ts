@@ -21,7 +21,7 @@ export class AuthService {
           localStorage.setItem('userType', response.userType);
           localStorage.setItem('userId', response.userId);
           this.userTypeSubject.next(response.userType);
-          this.router.navigate([response.userType === 'company' ? '/upload' : '/chat']);
+          this.router.navigate([response.userType === 'company' ? '/upload' : '/chat-list']);
         })
       );
   }

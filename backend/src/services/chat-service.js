@@ -3,6 +3,7 @@ const fs = require("fs");
 const path = require("path");
 const user = require("../models/user");
 const dotenv = require("dotenv");
+const { all } = require("../routes/auth");
 const ObjectId = require("mongodb").ObjectId;
 dotenv.config();
 
@@ -55,6 +56,7 @@ class ChatService {
         );
       } else {
         // Recuperar el asistente existente
+        console.log("Recuperando asistente existente");
         this.assistant = await this.openai.beta.assistants.retrieve(
           company.id_assistant
         );
@@ -212,7 +214,7 @@ class ChatService {
   async sendMessage(message, companyId) {
     try {
       await this.initializeAssistant(companyId);
-
+      console.log({ companyId})
       if (!this.assistant || !this.thread) {
         throw new Error(
           "Chat no disponible. Por favor, sube un documento primero."
@@ -285,6 +287,39 @@ class ChatService {
     } catch (error) {
       console.error("Error encontrando el nombre del archivo", error);
       throw new Error("Fallo al recuperar el nombre del archivo.");
+    }
+  }
+
+  async getChatList(companyId) {
+    try {
+      companyId = new ObjectId(companyId);
+      const allCompanies = await user.find();
+      console.log({ allCompanies });
+      const companiesWithChat = allCompanies.filter(company => { return company.userType != "client" && company.id_assistant != null });
+
+      const companiesNewArray = companiesWithChat.map(company => {
+        return {
+          _id: company._id,
+          username: company.username.toUpperCase(),
+          id_assistant: company.id_assistant,
+          current_file_id: company.current_file_id,
+          current_file_name: company.current_file_name
+        }
+      });
+
+      console.log({ companiesNewArray });
+
+      /* companyId = new ObjectId(companyId);
+      const company = await user.findById(companyId);
+      console.log({
+        companyFromGetChatList: company
+      })
+      return company.chat_list || []; */
+
+      return companiesNewArray;
+    } catch (error) {
+      console.error("Error obteniendo la lista de chat", error);
+      throw new Error("Fallo al recuperar la lista de chat.");
     }
   }
 }

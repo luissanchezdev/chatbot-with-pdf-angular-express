@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy, ViewChild, ElementRef, AfterViewChecked }
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient, HttpClientModule, HttpHeaders } from '@angular/common/http';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { MatCardModule } from '@angular/material/card';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
@@ -11,7 +11,6 @@ import { MatSnackBarModule, MatSnackBar } from '@angular/material/snack-bar';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { CapitalizePipe } from '../capitalize.pipe';
 
 interface Message {
   sender: 'user' | 'assistant';
@@ -19,7 +18,7 @@ interface Message {
 }
 
 @Component({
-  selector: 'app-chat',
+  selector: 'app-chat-user',
   standalone: true,
   imports: [
     CommonModule, 
@@ -30,13 +29,12 @@ interface Message {
     MatButtonModule, 
     MatIconModule, 
     MatSnackBarModule,
-    MatProgressSpinnerModule,
-    CapitalizePipe
+    MatProgressSpinnerModule
   ],
   template: `
     <mat-card>
       <mat-card-header>
-        <mat-card-title>Blaper Chat - Test Empresas</mat-card-title>
+        <mat-card-title>Blaper Chat para {{ nameCompany | uppercase }}</mat-card-title>
         <mat-card-subtitle *ngIf="currentFile">Documento actual: {{ currentFile }}</mat-card-subtitle>
       </mat-card-header>
       <mat-card-content>
@@ -107,7 +105,7 @@ interface Message {
     }
   `]
 })
-export class ChatComponent implements OnInit, OnDestroy, AfterViewChecked {
+export class ChatUserComponent implements OnInit, OnDestroy, AfterViewChecked {
   @ViewChild('chatContainer') private chatContainer!: ElementRef;
   messages: Message[] = [];
   userMessage = '';
@@ -117,17 +115,21 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewChecked {
   token: string | null = null;
   isTyping: boolean = false;
   private destroy$ = new Subject<void>();
+  nameCompany: string | null = ''
 
   constructor(
     private http: HttpClient, 
     private router: Router,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    private route : ActivatedRoute
   ) {}
 
   ngOnInit() {
+    this.nameCompany = this.route.snapshot.paramMap.get('nameCompany');
+    console.log({ nameCompany: this.nameCompany });
     this.checkChatStatus();
     this.token = localStorage.getItem('token');
-    console.log('Este es el chat.component.ts')
+    
   }
 
   ngAfterViewChecked() {
@@ -147,7 +149,8 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewChecked {
 
   checkChatStatus() {
     const userId = localStorage.getItem('userId') || '';
-    const headers = new HttpHeaders().set('X-User-ID', userId);
+    const nCompany = this.nameCompany
+    const headers = new HttpHeaders().set('X-User-ID', userId).set('X-Company-Name', nCompany || '');
     this.http.get<{chatAvailable: boolean, currentFile: string}>('http://localhost:3000/api/chat-status', { headers })
       .pipe(takeUntil(this.destroy$))
       .subscribe({
@@ -172,7 +175,7 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewChecked {
     if (this.userMessage.trim() && this.chatAvailable) {
       this.messages.push({sender: 'user', text: this.userMessage});
       const userId = localStorage.getItem('userId') || '';
-      const headers = new HttpHeaders().set('X-User-ID', userId);
+      const headers = new HttpHeaders().set('X-User-ID', userId).set('X-Company-Name', this.nameCompany || '');
       
       this.isTyping = true;
       

@@ -22,8 +22,8 @@ import { MatFormFieldModule } from '@angular/material/form-field';
   ],
   template: `
     <mat-card>
-      <mat-card-header>
-        <mat-card-title>Login</mat-card-title>
+      <mat-card-header class="center">
+        <mat-card-title>Iniciar Sesión</mat-card-title>
       </mat-card-header>
       <mat-card-content>
         <form (ngSubmit)="onSubmit()">
@@ -35,10 +35,12 @@ import { MatFormFieldModule } from '@angular/material/form-field';
             <mat-label>Contraseña</mat-label>
             <input matInput type="password" [(ngModel)]="password" name="password" required>
           </mat-form-field>
-          <button mat-raised-button color="primary" type="submit">Ingresar</button>
+          <div class="center">
+            <button class="center-x" mat-raised-button color="primary" type="submit">Ingresar</button>
+          </div>
         </form>
       </mat-card-content>
-      <mat-card-footer>
+      <mat-card-footer class="center">
         <p *ngIf="error" class="error">{{ error }}</p>
         <p>¿No tienes una cuenta? <a mat-button color="accent" routerLink="/register">Registrarse</a></p>
       </mat-card-footer>
