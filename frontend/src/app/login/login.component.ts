@@ -22,6 +22,9 @@ import { MatFormFieldModule } from '@angular/material/form-field';
   ],
   template: `
     <mat-card>
+      <div class="center p-md">
+        <img src="assets/images/logo-blaper.jpeg" alt="Blaper Chat" width="100" class="logo">
+      </div>
       <mat-card-header class="center">
         <mat-card-title>Iniciar Sesión</mat-card-title>
       </mat-card-header>

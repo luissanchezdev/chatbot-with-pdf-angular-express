@@ -13,7 +13,9 @@ import { Title } from '@angular/platform-browser';
   imports: [CommonModule, RouterOutlet, RouterLink, MatToolbarModule, MatButtonModule, MatIconModule],
   template: `
     <mat-toolbar color="primary" *ngIf="authService.isLoggedIn()">
-      <span>{{ titleWeb }}</span>
+      <div class="logo-wrapper">
+        <img src="assets/images/logo-blaper.jpeg" alt="Blaper Chat" class="logo">
+      </div>
       <span class="spacer"></span>
       <a mat-button routerLink="/chat">
         <mat-icon>chat</mat-icon>

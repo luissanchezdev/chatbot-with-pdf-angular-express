@@ -13,17 +13,25 @@ import { MatSelectModule } from '@angular/material/select';
   selector: 'app-register',
   standalone: true,
   imports: [
-    CommonModule, 
-    FormsModule, 
+    CommonModule,
+    FormsModule,
     RouterModule,
     MatCardModule,
     MatInputModule,
     MatButtonModule,
     MatFormFieldModule,
-    MatSelectModule
+    MatSelectModule,
   ],
   template: `
     <mat-card>
+      <div class="center p-md">
+        <img
+          src="assets/images/logo-blaper.jpeg"
+          alt="Blaper Chat"
+          width="100"
+          class="logo"
+        />
+      </div>
       <mat-card-header class="center">
         <mat-card-title>Registro</mat-card-title>
       </mat-card-header>
@@ -31,11 +39,23 @@ import { MatSelectModule } from '@angular/material/select';
         <form (ngSubmit)="onSubmit()">
           <mat-form-field appearance="fill">
             <mat-label>Nombre de usuario</mat-label>
-            <input matInput type="text" [(ngModel)]="username" name="username" required>
+            <input
+              matInput
+              type="text"
+              [(ngModel)]="username"
+              name="username"
+              required
+            />
           </mat-form-field>
           <mat-form-field appearance="fill">
             <mat-label>Contraseña</mat-label>
-            <input matInput type="password" [(ngModel)]="password" name="password" required>
+            <input
+              matInput
+              type="password"
+              [(ngModel)]="password"
+              name="password"
+              required
+            />
           </mat-form-field>
           <mat-form-field appearance="fill">
             <mat-label>Tipo de usuario</mat-label>
@@ -45,34 +65,41 @@ import { MatSelectModule } from '@angular/material/select';
             </mat-select>
           </mat-form-field>
           <div class="center">
-           <button mat-raised-button color="primary" type="submit">Registrarse</button>
+            <button mat-raised-button color="primary" type="submit">
+              Registrarse
+            </button>
           </div>
         </form>
       </mat-card-content>
       <mat-card-footer class="center">
         <p *ngIf="error" class="error">{{ error }}</p>
-        <p>¿Ya tienes una cuenta? <a mat-button color="accent" routerLink="/login">Iniciar sesión</a></p>
+        <p>
+          ¿Ya tienes una cuenta?
+          <a mat-button color="accent" routerLink="/login">Iniciar sesión</a>
+        </p>
       </mat-card-footer>
     </mat-card>
   `,
-  styles: [`
-    :host {
-      display: flex;
-      justify-content: center;
-      margin: 100px 0px;
-    }
-    mat-card {
-      max-width: 400px;
-    }
-    mat-form-field {
-      width: 100%;
-      margin-bottom: 16px;
-    }
-    .error {
-      color: red;
-      margin-top: 16px;
-    }
-  `]
+  styles: [
+    `
+      :host {
+        display: flex;
+        justify-content: center;
+        margin: 100px 0px;
+      }
+      mat-card {
+        max-width: 400px;
+      }
+      mat-form-field {
+        width: 100%;
+        margin-bottom: 16px;
+      }
+      .error {
+        color: red;
+        margin-top: 16px;
+      }
+    `,
+  ],
 })
 export class RegisterComponent {
   username: string = '';
@@ -82,13 +109,16 @@ export class RegisterComponent {
   private authService: AuthService = inject(AuthService);
   constructor(private router: Router) {}
   onSubmit() {
-    this.authService.register(this.username, this.password, this.userType).subscribe(
-      () => {
-        this.router.navigate(['/login']);
-      },
-      (error) => {
-        this.error = error.error.error || 'Un error ha ocurrido durante el registro';
-      }
-    );
+    this.authService
+      .register(this.username, this.password, this.userType)
+      .subscribe(
+        () => {
+          this.router.navigate(['/login']);
+        },
+        (error) => {
+          this.error =
+            error.error.error || 'Un error ha ocurrido durante el registro';
+        }
+      );
   }
 }

@@ -26,6 +26,34 @@ body {
 
 .center {
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
+}
+
+.logo {
+  height: 96px;
+  width: auto;
+  margin-bottom: 20px;
+  border-radius: 5px;
+}
+
+.logo-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 96px;
+}
+
+.logo-wrapper img {
+  height: 60%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0;
+  margin: 0;
+}
+
+.p-md {
+  margin: 2rem 0 -1rem 0;
 }
