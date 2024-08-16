@@ -96,16 +96,8 @@ El frontend está desarrollado con Angular 17 y proporciona las siguientes rutas
 - Integración con ChatGPT para proporcionar respuestas inteligentes
 - Interfaz de usuario intuitiva para la interacción con el chatbot
 
-## Contribuir
-
-Si deseas contribuir a este proyecto, por favor:
-
-1. Haz un fork del repositorio
-2. Crea una nueva rama (`git checkout -b feature/AmazingFeature`)
-3. Realiza tus cambios
-4. Haz commit de tus cambios (`git commit -m 'Add some AmazingFeature'`)
-5. Haz push a la rama (`git push origin feature/AmazingFeature`)
-6. Abre un Pull Request
+## Créditos
+Realizado por Anderson Ramirez  y Luis Sanchez
 
 ## Licencia
 
