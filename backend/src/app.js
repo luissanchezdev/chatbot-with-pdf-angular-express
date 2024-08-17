@@ -9,10 +9,13 @@ const authRoutes = require('./routes/auth');
 dotenv.config();
 
 const app = express();
-const port = process.env.PORT || 3000;
+const port = process.env.NODE_ENV === 'test' ? process.env.PORT_TEST : process.env.PORT || 3000;
 
-mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true })
-  .then(() => console.log('Connected to MongoDB'))
+
+const dbConnection = process.env.NODE_ENV === 'test' ? process.env.MONGODB_URI_TEST : process.env.MONGODB_URI;
+
+mongoose.connect(dbConnection, { useNewUrlParser: true, useUnifiedTopology: true })
+  
   .catch(err => console.error('MongoDB connection error:', err));
 
 app.use(cors());

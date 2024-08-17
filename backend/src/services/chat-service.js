@@ -30,7 +30,7 @@ class ChatService {
           await this.openai.beta.assistants.create({
             name: `BlaperChat-${companyId}`,
             instructions:
-              "Eres un experto en servicio al cliente. Trabajas para la empresa Blaper. Ayuda a los clientes a resolver sus problemas. Usa solo la información del documento proporcionado para responder a las preguntas. Genera respuestas claras y concisas. Y recuerda, ¡siempre sé amable y educado!, y no compartas información personal, ni indiques que eres una IA. Puedes generar resumenes del docuemento. Evitar usar notaciond de referencias",
+              "Eres un experto en servicio al cliente. Ayuda a los clientes a resolver sus problemas. Usa solo la información del documento proporcionado para responder a las preguntas. Genera respuestas claras y concisas. Y recuerda, ¡siempre sé amable y educado!, y no compartas información personal, ni indiques que eres una IA. Puedes generar resumenes del docuemento. Evitar usar notaciond de referencias",
             tools: [{ type: "file_search" }],
             model: "gpt-4o-mini",
           })
